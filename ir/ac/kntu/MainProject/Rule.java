@@ -9,4 +9,8 @@ public class Rule {
     public Rule() {
         this.symbols = new ArrayList<>();
     }
+
+    public List<Symbol> getSymbols() {
+        return symbols;
+    }
 }
