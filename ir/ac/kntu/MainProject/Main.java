@@ -17,10 +17,15 @@ public class Main {
                 input += '\n' + file.nextLine();
             }
             System.out.println(input);
-            CFG cfg = new CFG(input);
-            cfg.toCNF();
+            //CFG cfg = new CFG(input);
+            //cfg.toCNF();
             // TODO enable line below after compeleting funtion
             //System.out.println(cfg.toString());
+            file = new Scanner(System.in);
+            for (String string : file.nextLine().split("->")) {
+                System.out.println(string.trim());
+            }
+            file = null;
         } catch (FileNotFoundException exception) {
             System.out.println(exception.getMessage());
         }
