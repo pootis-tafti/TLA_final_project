@@ -63,7 +63,7 @@ public class Rule {
         } else if(obj instanceof Rule other){
             if (this.symbols.size() == other.getSymbols().size()) {
                 for (int i = 0; i < this.symbols.size(); i++) {
-                    if (this.symbols.get(i).equals(other.getSymbols().get(i))){
+                    if (! this.symbols.get(i).equals(other.getSymbols().get(i))){
                         return false;
                     }
                 }
@@ -87,12 +87,12 @@ public class Rule {
 
     public void replace(Variable variable){
         int i = this.indexOf(variable.getRules().get(0));
-        while(i != -1 && !isCNF()) {
-            for (int j = 0; j < variable.getRules().size(); j++) {
+        while(i != -1) {
+            for (int j = 0; j < variable.getRules().get(0).getSymbols().size(); j++) {
                 symbols.remove(i);
             }
             symbols.add(i, variable);
-            i =this.indexOf(variable.getRules().get(0));
+            i = this.indexOf(variable.getRules().get(0));
         }
         return;
     }
@@ -114,5 +114,14 @@ public class Rule {
             }
         }
         return j; 
+    }
+
+    @Override
+    public String toString() {
+        String output = "";
+        for (Symbol symbol : symbols) {
+            output += symbol.getName();
+        }
+        return output;
     }
 }

@@ -47,6 +47,7 @@ public class Variable extends Symbol{
 
     public void remove(Rule rule){
         rules.remove(rule);
+        
     }
 
     @Override

@@ -52,9 +52,28 @@ public class CFG {
             startVariable.addRule(variables.get(0));
             variables.add(0, startVariable);
         }
-        System.out.println(this.toString());
+        System.out.println(this.toString() + "\n");
         //TODO remove single variables
-        
+
+        for (Variable variable : variables) {
+            for (int i = 0; i < variable.getRules().size(); i++) {
+                Rule rule = variable.getRules().get(i);
+                if (! (rule instanceof Epsilon) && rule.getSymbols().size() == 1 
+                        && rule.getSymbols().get(0) instanceof Variable single){
+                    variable.remove(rule);
+                    if(!single.equals(variable)){
+                        for (Rule rule1 : single.getRules()) {
+                            if (!variable.contains(rule1)) {
+                                variable.getRules().add(rule1);
+                            }
+                        }
+                        
+                    }
+                }
+            }
+        }
+
+        System.out.println(this.toString() + "\n");
 
         // TODO remove epsilon
         for (Variable variable : variables) {
@@ -62,7 +81,10 @@ public class CFG {
                 variable.remove(new Epsilon());
                 for (Variable variable1 : variables) {
                     for (int i = 0; i < variable1.getRules().size(); i++) {
-                        if (variable1.getRules().get(i).contains(variable)) {
+                        if (variable1.getRules().get(i).contains(variable)
+                                && ! variable1.getRules().contains(variable1.getRules().get(i).generateWithout(variable))
+                                && variable1.getRules().get(i).generateWithout(variable).getSymbols().size() != 1) {
+                            System.out.println();
                             variable1.getRules().add(variable1.getRules().get(i).generateWithout(variable));
                         }
                     }
@@ -70,7 +92,7 @@ public class CFG {
             }
         }
         // TODO extract terminals
-        System.out.println(this.toString());
+        System.out.println(this.toString() + "\n");
         int i = 0;
         for (Terminal terminal : language) {
             System.out.println(terminal.getName());
@@ -82,23 +104,20 @@ public class CFG {
             }
             variables.add(termianlVariable);
         }
-        System.out.println(this.toString());
+        System.out.println(this.toString() + "\n");
         // TODO shrink variable rules
-        for (Variable variable : variables) {
+        for (int k = 0; k <  variables.size(); k++) {
+            Variable variable = variables.get(k);
             for (int j = 0; j < variable.getRules().size(); j++) {
                 Rule rule = variable.getRules().get(j);
-                while(rule.getSymbols().size() > 2){
+                if(rule.getSymbols().size() > 2){
                     Variable shrinkVariable = new Variable("V" + i);
-                    shrinkVariable.addRule(rule.getSymbols().get(0),rule.getSymbols().get(1));
+                    i++;
+                    shrinkVariable.addRule(rule.getSymbols().get(0), rule.getSymbols().get(1));
                     for (Variable variable1 : variables){
                         variable1.replace(shrinkVariable);
                     }
-                }
-                if (rule.getSymbols().size() == 1 && rule.getSymbols().get(0) instanceof Variable single){
-                    variable.remove(rule);
-                    if(!single.equals(variable)){
-                        variable.getRules().addAll(single.getRules());
-                    }
+                    variables.add(shrinkVariable);
                 }
             }
         }
