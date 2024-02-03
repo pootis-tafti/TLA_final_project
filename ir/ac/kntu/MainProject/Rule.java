@@ -30,4 +30,80 @@ public class Rule {
             || symbols.size() == 2 && symbols.get(0) instanceof Variable 
             && symbols.get(1) instanceof Variable;
     }
+
+    public boolean contains(Symbol other){
+        return this.symbols.contains(other);
+    }
+
+    public boolean contains(Rule rule){
+        if(rule instanceof Epsilon){
+            return this instanceof Epsilon;
+        }
+        int j = 0;
+        for (int i = 0; i < symbols.size(); i++) {
+            if(this.symbols.get(i).equals(rule.getSymbols().get(j))){
+                if(j == rule.getSymbols().size()){
+                    return true;
+                } else {
+                    j++;
+                }
+            } else {
+                j = 0;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(obj instanceof Epsilon){
+            return this instanceof Epsilon;
+        } else if(obj instanceof Rule other){
+            boolean equal = true;
+            if (this.symbols.size() == other.getSymbols().size()) {
+                for (int i = 0; i < this.symbols.size(); i++) {
+                    equal = equal && this.symbols.get(i).equals(other.getSymbols().get(i));
+                }
+                return equal;
+            } else {
+                return false;
+            }
+        }
+        return super.equals(obj);
+    }
+
+    public Rule generateWithout(Symbol symbol){
+        Rule output = new Rule();
+        for (int i = 0; i < this.symbols.size(); i++) {
+            if( !this.symbols.get(i).equals(symbol)){
+                output.getSymbols().add(this.symbols.get(i));
+            } 
+        }
+        return output;
+    }
+
+    public void replace(Variable variable){
+        Rule replaced = variable.getRules().get(0);
+        if (! this.contains(replaced)) {
+            return;
+        }
+        int j = 0;
+        for (int i = 0; i < this.symbols.size(); i++) {
+            if (this.symbols.get(i).equals(replaced.getSymbols().get(j))) {
+                j++;
+            } else {
+                j = 0;
+            }
+            if (j == replaced.getSymbols().size()) {
+                i -= j;
+                this.symbols.add(i, variable);
+                for (int k = 0; k < j; k++) {
+                    this.symbols.remove(k + i + 1);
+                }
+                j = 0;
+                i++;
+            }
+        }
+        return;
+    }
 }

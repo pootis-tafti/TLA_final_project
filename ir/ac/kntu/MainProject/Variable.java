@@ -31,4 +31,29 @@ public class Variable extends Symbol{
         }
         return super.equals(obj);
     }
+
+    public boolean contains(Rule rule){
+        return this.rules.contains(rule);
+    }
+
+    public boolean contains(Symbol symbol){
+        for (Rule rule : this.rules) {
+            if (rule.contains(symbol)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public void replace(Variable variable){
+        for (Rule rule : rules) {
+            if (!rule.isCNF()) {
+                rule.replace(variable);
+            }
+        }
+    }
+
+    public void remove(Rule rule){
+        rules.remove(rule);
+    }
 }
