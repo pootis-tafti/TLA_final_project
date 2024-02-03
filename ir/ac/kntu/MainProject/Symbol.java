@@ -19,8 +19,6 @@ public class Symbol {
     public boolean equals(Object obj) {
         if (obj instanceof Symbol other) {
             return this.getName().equals(other.getName());
-        } else if (obj instanceof String other) {
-            return this.getName().equals(other);
         }
         return super.equals(obj);
     }

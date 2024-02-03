@@ -29,11 +29,13 @@ public class CFG {
                 else{
                     adder = new Rule();
                     for (int i = 0; i < rule.length(); i++) {
-                        if(this.variables.contains("" + rule.charAt(i))){
-                            adder.getSymbols().add(this.variables.get(this.variables.indexOf("" + rule.charAt(i))));
+                        if(this.variables.contains(new Variable("" + rule.charAt(i)))){
+                            adder.getSymbols().add(this.variables.get(this.variables.indexOf(new Variable("" + rule.charAt(i)))));
                         } else {
                             Terminal terminal = new Terminal("" + rule.charAt(i));
-                            language.add(terminal);
+                            if (!language.contains(terminal)) {
+                                language.add(terminal);
+                            }
                             adder.getSymbols().add(terminal);
                         }
                     }
@@ -47,34 +49,44 @@ public class CFG {
     public void toCNF(){
         if (isRecursive()) {
             startVariable = new Variable("S0");
+            startVariable.addRule(variables.get(0));
             variables.add(0, startVariable);
         }
+        System.out.println(this.toString());
+        //TODO remove single variables
+        
+
         // TODO remove epsilon
         for (Variable variable : variables) {
             if(variable.contains(new Epsilon()) && ! variable.equals(this.startVariable)){
                 variable.remove(new Epsilon());
-                for (int i = 0; i < variable.getRules().size(); i++) {
-                    if (variable.getRules().get(i).contains(variable)) {
-                        variable.getRules().add(variable.getRules().get(i).generateWithout(variable));
+                for (Variable variable1 : variables) {
+                    for (int i = 0; i < variable1.getRules().size(); i++) {
+                        if (variable1.getRules().get(i).contains(variable)) {
+                            variable1.getRules().add(variable1.getRules().get(i).generateWithout(variable));
+                        }
                     }
                 }
             }
         }
         // TODO extract terminals
-
+        System.out.println(this.toString());
         int i = 0;
         for (Terminal terminal : language) {
-            Variable termianVariable = new Variable("V" + i);
+            System.out.println(terminal.getName());
+            Variable termianlVariable = new Variable("V" + i);
             i++;
-            termianVariable.addRule(terminal);
+            termianlVariable.addRule(terminal);
             for (Variable variable : variables) {
-                variable.replace(termianVariable);
+                variable.replace(termianlVariable);
             }
+            variables.add(termianlVariable);
         }
-
-        // TODO shrink variable rules and remove single variables
+        System.out.println(this.toString());
+        // TODO shrink variable rules
         for (Variable variable : variables) {
-            for (Rule rule : variable.getRules()) {
+            for (int j = 0; j < variable.getRules().size(); j++) {
+                Rule rule = variable.getRules().get(j);
                 while(rule.getSymbols().size() > 2){
                     Variable shrinkVariable = new Variable("V" + i);
                     shrinkVariable.addRule(rule.getSymbols().get(0),rule.getSymbols().get(1));
@@ -84,8 +96,8 @@ public class CFG {
                 }
                 if (rule.getSymbols().size() == 1 && rule.getSymbols().get(0) instanceof Variable single){
                     variable.remove(rule);
-                    for (Rule rule1: single.getRules()) {
-                        variable.addRule(rule1);
+                    if(!single.equals(variable)){
+                        variable.getRules().addAll(single.getRules());
                     }
                 }
             }

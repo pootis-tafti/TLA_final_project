@@ -86,26 +86,33 @@ public class Rule {
     }
 
     public void replace(Variable variable){
-        Rule replaced = variable.getRules().get(0);
-        if (! this.contains(replaced)) {
-            return;
+        int i = this.indexOf(variable.getRules().get(0));
+        while(i != -1 && !isCNF()) {
+            for (int j = 0; j < variable.getRules().size(); j++) {
+                symbols.remove(i);
+            }
+            symbols.add(i, variable);
+            i =this.indexOf(variable.getRules().get(0));
+        }
+        return;
+    }
+
+    public int indexOf(Rule rule){
+        if (! this.contains(rule)) {
+            return -1;
         }
         int j = 0;
         for (int i = 0; i < this.symbols.size(); i++) {
-            if (this.symbols.get(i).equals(replaced.getSymbols().get(j))) {
+            if (this.symbols.get(i).equals(rule.getSymbols().get(j))) {
                 j++;
             } else {
                 j = 0;
             }
-            if (j == replaced.getSymbols().size()) {
-                i -= j - 1;
-                this.symbols.add(i, variable);
-                for (int k = 0; k < j; k++) {
-                    this.symbols.remove(i);
-                }
-                j = 0;
+            if (j == rule.getSymbols().size()) {
+                j = i - j + 1;
+                break;
             }
         }
-        return;
+        return j; 
     }
 }
