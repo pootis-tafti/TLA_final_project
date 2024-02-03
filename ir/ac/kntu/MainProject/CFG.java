@@ -164,4 +164,20 @@ public class CFG {
         }
         return false;
     }
+
+    public void setStartVariable(Variable startVariable) {
+        this.startVariable = startVariable;
+    }
+
+    public List<Variable> getVariables() {
+        return variables;
+    }
+
+    public List<Terminal> getLanguage() {
+        return language;
+    }
+
+    public Variable getStartVariable() {
+        return startVariable;
+    }
 }
