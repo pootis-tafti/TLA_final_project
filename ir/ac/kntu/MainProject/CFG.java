@@ -52,7 +52,7 @@ public class CFG {
             startVariable.addRule(variables.get(0));
             variables.add(0, startVariable);
         }
-        System.out.println(this.toString() + "\n");
+        //System.out.println(this.toString() + "\n");
         //TODO remove single variables
 
         for (Variable variable : variables) {
@@ -73,7 +73,7 @@ public class CFG {
             }
         }
 
-        System.out.println(this.toString() + "\n");
+        //System.out.println(this.toString() + "\n");
 
         // TODO remove epsilon
         for (Variable variable : variables) {
@@ -84,18 +84,19 @@ public class CFG {
                         if (variable1.getRules().get(i).contains(variable)
                                 && ! variable1.getRules().contains(variable1.getRules().get(i).generateWithout(variable))
                                 && variable1.getRules().get(i).generateWithout(variable).getSymbols().size() != 1) {
-                            System.out.println();
                             variable1.getRules().add(variable1.getRules().get(i).generateWithout(variable));
                         }
                     }
                 }
             }
         }
+
         // TODO extract terminals
-        System.out.println(this.toString() + "\n");
+
+        //System.out.println(this.toString() + "\n");
+
         int i = 0;
         for (Terminal terminal : language) {
-            System.out.println(terminal.getName());
             Variable termianlVariable = new Variable("V" + i);
             i++;
             termianlVariable.addRule(terminal);
@@ -104,13 +105,16 @@ public class CFG {
             }
             variables.add(termianlVariable);
         }
-        System.out.println(this.toString() + "\n");
+
+        //System.out.println(this.toString() + "\n");
+
         // TODO shrink variable rules
+
         for (int k = 0; k <  variables.size(); k++) {
             Variable variable = variables.get(k);
             for (int j = 0; j < variable.getRules().size(); j++) {
                 Rule rule = variable.getRules().get(j);
-                if(rule.getSymbols().size() > 2){
+                while(rule.getSymbols().size() > 2){
                     Variable shrinkVariable = new Variable("V" + i);
                     i++;
                     shrinkVariable.addRule(rule.getSymbols().get(0), rule.getSymbols().get(1));
@@ -145,7 +149,7 @@ public class CFG {
 
     public boolean isRecursive(){
         for (Variable variable : variables) {
-            if (variable.contains(new Epsilon())) {
+            if (variable.contains(startVariable)) {
                 return true;
             }
         }

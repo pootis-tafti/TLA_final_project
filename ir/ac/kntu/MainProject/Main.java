@@ -17,6 +17,9 @@ public class Main {
                 input += '\n' + file.nextLine();
             }
             CFG cfg = new CFG(input);
+            
+            System.out.println(cfg.toString());
+            System.out.println("chomsky normal form:");
             cfg.toCNF();
             System.out.println(cfg.toString());
         } catch (FileNotFoundException exception) {
