@@ -21,9 +21,9 @@ public class CFG {
         }
         for (String line : cfg.split("\n")) {
             String[] variable = line.split("->");
-            for (String rule : variable[2].trim().split("\\|")) {
+            for (String rule : variable[1].trim().split("\\|")) {
                 Rule adder;
-                if(rule.equals("î")){
+                if(rule.hashCode() == 6567){
                     adder = new Epsilon();
                 }
                 else{
@@ -38,7 +38,7 @@ public class CFG {
                         }
                     }
                 }
-                variables.get(variables.indexOf(variable[0].trim())).addRule(adder);
+                variables.get(variables.indexOf(new Symbol(variable[0].trim()))).addRule(adder);
             }
             startVariable = this.variables.get(0);
         }
@@ -94,8 +94,22 @@ public class CFG {
 
     @Override
     public String toString() {
-        // TODO compelete method
-        return null;
+        String output = "";
+        for (Variable variable : this.variables) {
+            output += variable.getName() + " -> ";
+            for (Rule rule : variable.getRules()) {
+                if (rule.equals(new Epsilon())) {
+                    output += "\u03B5";
+                }else {
+                    for (Symbol symbol : rule.getSymbols()) {
+                        output += symbol.getName();
+                    }
+                }
+                output += '|';
+            }
+            output = output.substring(0, output.length() - 1) + '\n';
+        }
+        return output.substring(0, output.length() - 1);
     }
 
     public boolean isRecursive(){

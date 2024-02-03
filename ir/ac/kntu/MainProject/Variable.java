@@ -24,14 +24,6 @@ public class Variable extends Symbol{
         this.rules.add(new Rule(symbols));
     }
 
-    @Override
-    public boolean equals(Object obj) {
-        if(obj instanceof Variable other){
-            return this.getName().equals(other.getName());
-        }
-        return super.equals(obj);
-    }
-
     public boolean contains(Rule rule){
         return this.rules.contains(rule);
     }
@@ -55,5 +47,10 @@ public class Variable extends Symbol{
 
     public void remove(Rule rule){
         rules.remove(rule);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return super.equals(obj);
     }
 }

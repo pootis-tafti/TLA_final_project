@@ -5,4 +5,9 @@ public class Epsilon extends Rule {
         super();
         setSymbols(null);
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof Epsilon;
+    }
 }
